@@ -1,7 +1,7 @@
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+
 class attention2d(nn.Module):
     def __init__(self, in_channels, ratios, K, temperature, init_weight=True):
         super(attention2d, self).__init__()

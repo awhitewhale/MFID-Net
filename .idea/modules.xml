@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/DRAGN-Dynamic-Residual-Adaptive-Dehazing-Network.iml" filepath="$PROJECT_DIR$/.idea/DRAGN-Dynamic-Residual-Adaptive-Dehazing-Network.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../DRADN-Dynamic-Residual-Adaptive-Dehazing-Network/.idea/DRADN-Dynamic-Residual-Adaptive-Dehazing-Network.iml" filepath="$PROJECT_DIR$/../DRADN-Dynamic-Residual-Adaptive-Dehazing-Network/.idea/DRADN-Dynamic-Residual-Adaptive-Dehazing-Network.iml" />
     </modules>
   </component>
 </project>

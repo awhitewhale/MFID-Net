@@ -21,7 +21,7 @@ my_model = dehaze4K.B_transformer().to(device)
 my_model.eval()
 my_model.to(device)
 
-my_model.load_state_dict(torch.load("../../model/4kdehaze.pth"))
+my_model.load_state_dict(torch.load("../../checkpoint/DRADN.pth"))
 to_pil_image = transforms.ToPILImage()
 
 tfs_full = transforms.Compose([
