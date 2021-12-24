@@ -3,55 +3,45 @@ import cv2
 from torch.utils.data import DataLoader
 from torch.utils.data.dataset import Dataset
 from natsort import ns, natsorted
-
-def load_simple_list(src_path):
-    name_list = list()
+'''
+读取文件夹内所有图片，并以列表形式返回，通过natsort排序为windows下的排序方法而不是linux
+'''
+def load_dataset_pathlist(src_path):
+    name_list = []
     for name in os.listdir(src_path):
         path = os.path.join(src_path, name)
         name_list.append(path)
-    name_list = [name for name in name_list if '.jpg' or '.JPG' or '.png' or '.PNG' in name]
-    name_list = natsorted(name_list, alg=ns.PATH)
+    name_list = natsorted([name for name in name_list if '.jpg' or '.JPG' or '.png' or '.PNG' in name], alg=ns.PATH)
     return name_list
 
-class StyleDataset(Dataset):
-    def __init__(self, content1, information, size):
-        self.content1_list = content1
-        self.label = information
+class DehazeDataset(Dataset):
+    def __init__(self, hazy, gt, size):
+        self.hazy_list = hazy
+        self.gt = gt
         self.size = 512
-        self.len = len(self.content1_list)
-
+        self.len = len(self.hazy_list)
     def __getitem__(self, index):
-        c1_path = self.content1_list[index]
-        f_path = self.label[index]
-        content = cv2.imread(c1_path)[:, :, ::-1]
-        information = cv2.imread(f_path)[:, :, ::-1]
-        try:
-            content = cv2.resize(content, (512, 512))
-        except:
-            content = cv2.resize(content, (512, 512))
-        try:
-            information = cv2.resize(information, (512, 512))
-        except:
-            information = cv2.resize(information, (512, 512))
-        content = content.transpose((2, 0, 1)) / 255.0
-        information = information.transpose((2, 0, 1)) / 255.0
-
-        return content, information
-
+        hazy_path = self.hazy_list[index]
+        gt_path = self.gt[index]
+        hazy = cv2.imread(hazy_path)[:, :, ::-1]
+        gt = cv2.imread(gt_path)[:, :, ::-1]
+        hazy = cv2.resize(hazy, (512, 512))
+        gt = cv2.resize(gt, (512, 512))
+        hazy = hazy.transpose((2, 0, 1)) / 255.0
+        gt = gt.transpose((2, 0, 1)) / 255.0
+        return hazy, gt
     def __len__(self):
         return self.len
 
-def style_loader(hazy_folder, gt_folder, size, batch_size):
-    hazy_list = load_simple_list(hazy_folder)
-    gt_list = load_simple_list(gt_folder)
-    dataset = StyleDataset(hazy_list, gt_list, size)
-    num_workers = 0
-    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers)
+def Data_Loader(hazy_folder, gt_folder, size, batch_size):
+    hazy_list = load_dataset_pathlist(hazy_folder)
+    gt_list = load_dataset_pathlist(gt_folder)
+    dataset = DehazeDataset(hazy_list, gt_list, size)
+    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
     return dataloader
 
 def reside_dataset_loader(ITS_hazy_train_folder, ITS_gt_train_folder, ITS_hazy_val_folder, ITS_gt_val_folder, OTS_hazy_folder, OTS_gt_folder, size, batch_size):
     '''
-
     :param ITS_hazy_train_folder:
     :param ITS_gt_train_folder:
     :param ITS_hazy_val_folder:
@@ -64,19 +54,18 @@ def reside_dataset_loader(ITS_hazy_train_folder, ITS_gt_train_folder, ITS_hazy_v
     :param batch_size:
     :return:
     '''
-    hazy_list1 = load_simple_list(ITS_hazy_train_folder)
-    hazy_list2 = load_simple_list(ITS_hazy_val_folder)
-    hazy_list3 = load_simple_list(OTS_hazy_folder)
+    hazy_list1 = load_dataset_pathlist(ITS_hazy_train_folder)
+    hazy_list2 = load_dataset_pathlist(ITS_hazy_val_folder)
+    hazy_list3 = load_dataset_pathlist(OTS_hazy_folder)
     hazy_list = hazy_list1+hazy_list2+hazy_list3
-    gt_list1 = load_simple_list(ITS_gt_train_folder)
-    gt_list2 = load_simple_list(ITS_gt_val_folder)
-    gt_list3 = load_simple_list(OTS_gt_folder)
+    gt_list1 = load_dataset_pathlist(ITS_gt_train_folder)
+    gt_list2 = load_dataset_pathlist(ITS_gt_val_folder)
+    gt_list3 = load_dataset_pathlist(OTS_gt_folder)
     gt_list = gt_list1 * 10 + gt_list2 * 10 + gt_list3*35
     hazy_list = natsorted(hazy_list, alg=ns.PATH)
     gt_list = natsorted(gt_list, alg=ns.PATH)
-    dataset = StyleDataset(hazy_list, gt_list, size)
-    num_workers = 0
-    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers)
+    dataset = DehazeDataset(hazy_list, gt_list, size)
+    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
     return dataloader
 
 

@@ -1,6 +1,10 @@
 import os
 import shutil
 
+'''
+把path文件夹中所有png文件重命名为000001.png, 000002.png, ...
+'''
+
 def alter_fileName(target_path):
     n = 0
     filelist = os.listdir(target_path)
@@ -18,6 +22,6 @@ def file_copy(path,target_path):
                 shutil.copy(list, target_path)
 
 path = "/home/data/RESIDE/ITS/val/clear"
-target_path=""
+target_path="/home/data/RESIDE/ITS/val/renamed_clear"
 file_copy(path, target_path)
 alter_fileName(target_path)
