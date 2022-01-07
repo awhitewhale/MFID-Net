@@ -112,9 +112,9 @@ class DyReLU(nn.Module):
     def forward(self, x):
         raise NotImplementedError
 
-class DyReLU(DyReLU):
+class DyReLUU(DyReLU):
     def __init__(self, in_features, reduction=4, k=2, conv_type='2d'):
-        super(DyReLU, self).__init__(in_features, reduction, k, conv_type)
+        super(DyReLUU, self).__init__(in_features, reduction, k, conv_type)
         self.fullyconnected2 = nn.Linear(in_features // reduction, 2*k*in_features)
 
     def forward(self, x):
@@ -288,14 +288,14 @@ class dynamic_transformer(nn.Module):
         self.smooth = nn.PReLU()
         self.fusion = nn.Sequential(
             Dynamic_conv2d(in_features=9, out_features=16, kernel_size=3, stride=1, padding=1),
-            DyReLU(in_features=16),
+            DyReLUU(in_features=16),
             Dynamic_conv2d(in_features=16, out_features=3, kernel_size=1, stride=1, padding=0),
             nn.PReLU(),
         )
 
         self.features_fusion = nn.Sequential(
             Dynamic_conv2d(in_features=3, out_features=8, kernel_size=3, stride=1, padding=1),
-            DyReLU(in_features=8),
+            DyReLUU(in_features=8),
             Dynamic_conv2d(in_features=8, out_features=3, kernel_size=3, stride=1, padding=1),
             nn.PReLU(),
         )
@@ -308,14 +308,14 @@ class dynamic_transformer(nn.Module):
     def forward(self, x):
         first_upsample = F.interpolate(x, (320, 320), mode='bicubic', align_corners=True)
         second_upsample = F.interpolate(x, (256, 256), mode='bicubic', align_corners=True)
-        dyparameter = self.downsample(self.u_net(second_upsample)).reshape(-1, 12, 16, 16, 16)
+        dyparameter = self.downsample(self.DRADNnn(second_upsample)).reshape(-1, 12, 16, 16, 16)
         hazef_r = self.initialize_dynet_r(x[:, 0:1, :, :])
         hazef_g = self.initialize_dynet_g(x[:, 1:2, :, :])
         hazef_b = self.initialize_dynet_b(x[:, 2:3, :, :])
         haze_strong_features_dyparameters_r = self.haze_strong_features(dyparameter, hazef_r)
         haze_strong_features_dyparameters_g = self.haze_strong_features(dyparameter, hazef_g)
         haze_strong_features_dyparameters_b = self.haze_strong_features(dyparameter, hazef_b)
-        first_upsample = self.u_net_mini(first_upsample)
+        first_upsample = self.DRADNnn_backup(first_upsample)
         first_upsample = F.interpolate(first_upsample, (x.shape[2], x.shape[3]), mode='bicubic', align_corners=True)
         output_r = self.apply_dyparameters(haze_strong_features_dyparameters_r, self.p(self.r_channel_feature(first_upsample)))
         output_g = self.apply_dyparameters(haze_strong_features_dyparameters_g, self.p(self.g_channel_feature(first_upsample)))
