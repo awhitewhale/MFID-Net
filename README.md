@@ -1,5 +1,5 @@
-# DRADN: Dynamic Residual Adaptive Dehazing Network
-code for paper DRADN: Dynamic Residual Adaptive Dehazing Network
+# DRAD-Net: Dynamic Residual Adaptive Dehazing Network
+code for paper DRAD-Net: Dynamic Residual Adaptive Dehazing Network
 
 train:
 ```
