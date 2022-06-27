@@ -1,14 +1,14 @@
-# DRAD-Net: Dynamic Residual Adaptive Dehazing Network
-code for paper DRAD-Net: Dynamic Residual Adaptive Dehazing Network
+# MFID-Net: Multi-scaled Features-fused Image Dehazing via Dynamic Weights
+code for paper MFID-Net: Multi-scaled Features-fused Image Dehazing via Dynamic Weights
 
 train:
 ```
-cd DRADN-Dynamic-Residual-Adaptive-Dehazing-Network
+cd MFID-Net
 python src/pipeline/TrainDRAGN.py
 ```
 test:
 ```
-cd DRADN-Dynamic-Residual-Adaptive-Dehazing-Network
+cd MFID-Net
 python src/pipeline/TestDRAGN.py
 ```
 
