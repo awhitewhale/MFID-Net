@@ -5,12 +5,13 @@ import torch
 from natsort import ns, natsorted
 from torchvision.utils import save_image
 import pandas as pd
-from src.model import dehaze4K
-from src.model import doconv
-from src.model import dyconv
-from src.model import dyrelu
-from src.model import dyConvdyrelu
-model_this_time = 'DRADN'
+#from src.model import dehaze4K
+#from src.model import doconv
+#from src.model import dyconv
+#from src.model import dyrelu
+#from src.model import dyConvdyrelu
+from src.model import DRAGN
+model_this_time = 'DRAGN'
 print(model_this_time)
 from skimage.metrics import structural_similarity
 from skimage.metrics import peak_signal_noise_ratio
