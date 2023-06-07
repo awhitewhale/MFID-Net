@@ -3,14 +3,14 @@ import os
 cur_path = os.path.abspath(os.path.dirname(__file__))
 sys.path.insert(0, cur_path+"/.."+"/..")
 import torch
-from src.model import dyconv
-from src.model import doconv
-from src.model import dyrelu
-from src.model import dehaze4K
-from src.model import dyConvdyrelu
-from src.model import DRADN
-from src.model import dyL1Loss
-model_this_time = 'DRADN'
+#from src.model import dyconv
+#from src.model import doconv
+#from src.model import dyrelu
+#from src.model import dehaze4K
+#from src.model import dyConvdyrelu
+from src.model import DRAGN
+#from src.model import dyL1Loss
+model_this_time = 'DRAGN'
 print(model_this_time)
 os.environ['CUDA_VISIBLE_DEVICES'] = '0, 1, 3, 4, 10, 11, 12, 13, 14, 15, 16'
 from src.preprocess import imagepreprocess
@@ -31,8 +31,8 @@ def train(args):
     model = nn.DataParallel(model, device_ids=[0, 1, 3, 4, 10, 11, 12, 13, 14, 15, 16])
     model = model.cuda()
     optimizer = optim.Adam(model.parameters(), lr=args.lr, betas=(0.9, 0.999))
-    dyloss = dyL1Loss().cuda()
-    # loss = nn.L1Loss().cuda()
+    #dyloss = dyL1Loss().cuda()
+    loss = nn.L1Loss().cuda()
     hazy_folder1 = '/home/data/RESIDE/ITS/train/ITS_haze/'
     gt_folder = '/home/data/RESIDE/ITS/train/ITS_clear/'
     ITS_hazy_train_folder = '/home/data/RESIDE/ITS/train/ITS_haze/'
